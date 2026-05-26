@@ -1,4 +1,4 @@
-# Portfolio — Open Source Developer Portfolio CMS
+# Portfolio — Open Source Universal Portfolio CMS
 
 A fully self-hosted portfolio CMS built with **Laravel 13**, **Vue 3**, and **Filament v5**. Manage your entire portfolio — hero, skills, projects, blog, and business highlights — through a clean admin panel, with a fast Vue SPA on the frontend.
 
@@ -276,6 +276,7 @@ Built by **Md. Risul Islam Munna** — Full Stack Developer & SaaS Builder from 
 - **GitHub**: [github.com/risul-islam-munna](https://github.com/risul-islam-munna)
 - **LinkedIn**: [linkedin.com/in/risul-islam-munna](https://www.linkedin.com/in/risul-islam-munna/)
 - **Facebook**: [facebook.com/munna.dev.bd](https://www.facebook.com/munna.dev.bd/)
+- **Website**: [facebook.com/munna.dev.bd](https://www.facebook.com/munna.dev.bd/)
 
 ---
 
