@@ -6,7 +6,7 @@
         </div>
 
         <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionTitle label="My Business" title="Bee Hook" :subtitle="biz.tagline || 'E-commerce SaaS for automating online businesses'" />
+            <SectionTitle label="My Business" :title="biz.name" :subtitle="biz.tagline" />
 
             <div class="grid items-center gap-12 lg:grid-cols-2">
                 <!-- Info -->

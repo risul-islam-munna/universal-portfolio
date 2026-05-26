@@ -15,7 +15,7 @@
             <ServicesSection v-if="services.length > 0" />
             <PortfolioSection v-if="projects.length > 0" />
             <ExperienceSection v-if="experience.length > 0" />
-            <BeeHookSection />
+            <BeeHookSection v-if="businessHighlight" />
             <TestimonialsSection v-if="testimonials.length > 0" />
             <BlogSection v-if="blog.length > 0" />
             <ContactSection />
@@ -37,5 +37,5 @@ import TestimonialsSection from '@/portfolio/components/sections/TestimonialsSec
 import BlogSection from '@/portfolio/components/sections/BlogSection.vue';
 import ContactSection from '@/portfolio/components/sections/ContactSection.vue';
 
-const { loading, skills, services, projects, experience, testimonials, blog } = storeToRefs(useContentStore());
+const { loading, skills, services, projects, experience, testimonials, blog, businessHighlight } = storeToRefs(useContentStore());
 </script>

@@ -130,7 +130,11 @@ class PortfolioController extends Controller
 
     public function businessHighlight(): JsonResponse
     {
-        $business = BusinessHighlight::first() ?? new BusinessHighlight;
+        $business = BusinessHighlight::first();
+
+        if (! $business) {
+            return response()->json(null);
+        }
 
         return response()->json(new BusinessHighlightResource($business));
     }

@@ -53,7 +53,7 @@ import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useContentStore } from '@/portfolio/stores/useContentStore';
 
-const { settings, skills, services, projects, experience, blog } = storeToRefs(useContentStore());
+const { settings, skills, services, projects, experience, blog, businessHighlight } = storeToRefs(useContentStore());
 
 const navLinks = computed(() => {
     const all = [
@@ -62,6 +62,7 @@ const navLinks = computed(() => {
         { label: 'Services', href: '#services', show: services.value.length > 0 },
         { label: 'Portfolio', href: '#portfolio', show: projects.value.length > 0 },
         { label: 'Experience', href: '#experience', show: experience.value.length > 0 },
+        { label: 'My Business', href: '#beehook', show: !!businessHighlight.value },
         { label: 'Blog', href: '#blog', show: blog.value.length > 0 },
         { label: 'Contact', href: '#contact', show: true },
     ];
