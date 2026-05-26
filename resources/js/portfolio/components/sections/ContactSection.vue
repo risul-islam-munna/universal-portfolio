@@ -28,12 +28,22 @@
                         </div>
                     </div>
                     <!-- Social Links -->
-                    <div class="glass-card p-5">
+                    <div v-if="(settings?.social_links ?? []).some((l: any) => l.url)" class="glass-card p-5">
                         <div class="mb-3 text-sm font-medium" style="color: var(--p-muted)">Follow Me</div>
-                        <div class="flex gap-3">
-                            <a v-for="(url, key) in socialLinks" :key="key" :href="url" target="_blank" class="flex h-10 w-10 items-center justify-center rounded-xl transition-all hover:scale-110" style="background: var(--p-bg); color: var(--p-text)">
-                                {{ socialIcons[key] }}
-                            </a>
+                        <div class="flex flex-wrap gap-3">
+                            <template v-for="link in (settings?.social_links ?? [])" :key="link.name">
+                                <a
+                                    v-if="link.url"
+                                    :href="link.url"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="flex h-10 w-10 items-center justify-center rounded-xl transition-all hover:scale-110"
+                                    style="background: var(--p-bg); color: var(--p-muted)"
+                                    :aria-label="link.name"
+                                >
+                                    <span class="inline-block h-5 w-5" v-html="link.svg_icon" />
+                                </a>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -87,7 +97,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useContentStore } from '@/portfolio/stores/useContentStore';
 import { useContactStore } from '@/portfolio/stores/useContactStore';
@@ -95,14 +104,6 @@ import SectionTitle from '@/portfolio/components/ui/SectionTitle.vue';
 
 const { settings } = storeToRefs(useContentStore());
 const contactStore = useContactStore();
-
-const socialLinks = computed(() =>
-    Object.fromEntries(Object.entries(settings.value?.social ?? {}).filter(([, v]) => v)),
-);
-
-const socialIcons: Record<string, string> = {
-    github: '🐙', linkedin: '💼', facebook: '📘', twitter: '🐦',
-};
 </script>
 
 <style scoped>

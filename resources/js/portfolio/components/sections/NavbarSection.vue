@@ -79,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useThemeStore } from '@/portfolio/stores/useThemeStore';
 import { useContentStore } from '@/portfolio/stores/useContentStore';
@@ -87,22 +87,25 @@ import { storeToRefs } from 'pinia';
 
 const router = useRouter();
 const themeStore = useThemeStore();
-const { settings } = storeToRefs(useContentStore());
+const { settings, skills, services, projects, experience, blog } = storeToRefs(useContentStore());
 const scrolled = ref(false);
 const mobileOpen = ref(false);
 const themeMenuOpen = ref(false);
 const themeMenuRef = ref<HTMLElement | null>(null);
 
-const navLinks = [
-    { label: 'Home', href: '#hero' },
-    { label: 'About', href: '#about' },
-    { label: 'Skills', href: '#skills' },
-    { label: 'Services', href: '#services' },
-    { label: 'Portfolio', href: '#portfolio' },
-    { label: 'Experience', href: '#experience' },
-    { label: 'Blog', href: '#blog' },
-    { label: 'Contact', href: '#contact' },
-];
+const navLinks = computed(() => {
+    const all = [
+        { label: 'Home', href: '#hero', show: true },
+        { label: 'About', href: '#about', show: true },
+        { label: 'Skills', href: '#skills', show: skills.value.length > 0 },
+        { label: 'Services', href: '#services', show: services.value.length > 0 },
+        { label: 'Portfolio', href: '#portfolio', show: projects.value.length > 0 },
+        { label: 'Experience', href: '#experience', show: experience.value.length > 0 },
+        { label: 'Blog', href: '#blog', show: blog.value.length > 0 },
+        { label: 'Contact', href: '#contact', show: true },
+    ];
+    return all.filter((l) => l.show);
+});
 
 function scrollTo(hash: string) {
     const el = document.querySelector(hash);

@@ -10,20 +10,15 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('site_title')->default('Munna | Full Stack Developer');
-            $table->string('tagline')->nullable();
-            $table->text('meta_description')->nullable();
-            $table->string('logo')->nullable();
-            $table->string('favicon')->nullable();
-            $table->string('github_url')->nullable();
-            $table->string('linkedin_url')->nullable();
-            $table->string('facebook_url')->nullable();
-            $table->string('twitter_url')->nullable();
-            $table->string('contact_email')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('address')->nullable();
-            $table->string('google_analytics_id')->nullable();
+            $table->string('theme', 100)->default('default')->comment('Theme slug this setting belongs to');
+            $table->string('key', 200)->comment('Setting key, e.g. site_title, github_url');
+            $table->longText('value')->nullable()->comment('Setting value (plain string or JSON-encoded)');
+            $table->boolean('status')->default(true)->comment('1 = active, 0 = disabled');
             $table->timestamps();
+
+            $table->unique(['theme', 'key']);
+            $table->index('theme');
+            $table->index('status');
         });
     }
 

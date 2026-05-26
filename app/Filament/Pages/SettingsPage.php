@@ -4,12 +4,16 @@ namespace App\Filament\Pages;
 
 use App\Models\Setting;
 use App\Providers\StorageServiceProvider;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Actions as SchemaActions;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
@@ -36,8 +40,31 @@ class SettingsPage extends Page implements HasForms
 
     public function mount(): void
     {
-        $setting = Setting::first();
-        $this->form->fill($setting?->data ?? []);
+        $settings = Setting::forTheme('default');
+
+        $socialLinks = json_decode($settings['social_links'] ?? 'null', true) ?? [];
+
+        $this->form->fill([
+            // General
+            'site_title' => $settings['site_title'] ?? null,
+            'tagline' => $settings['tagline'] ?? null,
+            'meta_description' => $settings['meta_description'] ?? null,
+            'contact_email' => $settings['contact_email'] ?? null,
+            'phone' => $settings['phone'] ?? null,
+            'address' => $settings['address'] ?? null,
+            'google_analytics_id' => $settings['google_analytics_id'] ?? null,
+
+            // Social
+            'social_links' => $socialLinks,
+
+            // Storage
+            'storage_driver' => $settings['storage_driver'] ?? 'local',
+            'r2_account_id' => $settings['r2_account_id'] ?? null,
+            'r2_bucket' => $settings['r2_bucket'] ?? null,
+            'r2_access_key' => $settings['r2_access_key'] ?? null,
+            'r2_secret_key' => $settings['r2_secret_key'] ?? null,
+            'r2_public_url' => $settings['r2_public_url'] ?? null,
+        ]);
     }
 
     public function form(Schema $schema): Schema
@@ -69,6 +96,8 @@ class SettingsPage extends Page implements HasForms
                                     ->email(),
 
                                 TextInput::make('phone')
+                                    ->label('Phone Number')
+                                    ->placeholder('+880 1234-567890')
                                     ->maxLength(50),
 
                                 TextInput::make('address')
@@ -83,37 +112,31 @@ class SettingsPage extends Page implements HasForms
                         ]),
 
                         Tab::make('Social Media')->schema([
-                            Grid::make(2)->schema([
-                                TextInput::make('github_url')
-                                    ->label('GitHub URL')
-                                    ->url()
-                                    ->maxLength(500),
+                            Repeater::make('social_links')
+                                ->label('Social Media Links')
+                                ->schema([
+                                    TextInput::make('name')
+                                        ->label('Platform Name')
+                                        ->required()
+                                        ->placeholder('GitHub')
+                                        ->maxLength(100),
 
-                                TextInput::make('linkedin_url')
-                                    ->label('LinkedIn URL')
-                                    ->url()
-                                    ->maxLength(500),
+                                    TextInput::make('url')
+                                        ->label('Profile URL')
+                                        ->url()
+                                        ->maxLength(500),
 
-                                TextInput::make('facebook_url')
-                                    ->label('Facebook URL')
-                                    ->url()
-                                    ->maxLength(500),
-
-                                TextInput::make('twitter_url')
-                                    ->label('X / Twitter URL')
-                                    ->url()
-                                    ->maxLength(500),
-
-                                TextInput::make('youtube_url')
-                                    ->label('YouTube URL')
-                                    ->url()
-                                    ->maxLength(500),
-
-                                TextInput::make('instagram_url')
-                                    ->label('Instagram URL')
-                                    ->url()
-                                    ->maxLength(500),
-                            ]),
+                                    Textarea::make('svg_icon')
+                                        ->label('SVG Icon')
+                                        ->placeholder('<svg viewBox="0 0 24 24" fill="currentColor">...</svg>')
+                                        ->rows(3)
+                                        ->columnSpanFull(),
+                                ])
+                                ->columns(2)
+                                ->addActionLabel('Add Social Media')
+                                ->collapsible()
+                                ->reorderable()
+                                ->columnSpanFull(),
                         ]),
 
                         Tab::make('Storage')->schema([
@@ -158,6 +181,13 @@ class SettingsPage extends Page implements HasForms
                                             ->maxLength(500)
                                             ->columnSpanFull(),
                                     ]),
+
+                                    SchemaActions::make([
+                                        Action::make('testR2Connection')
+                                            ->label('Test R2 Connection')
+                                            ->color('gray')
+                                            ->action(fn ($livewire) => $livewire->testR2Connection()),
+                                    ]),
                                 ]),
                         ]),
                     ])
@@ -169,11 +199,11 @@ class SettingsPage extends Page implements HasForms
     {
         $data = $this->form->getState();
 
-        $setting = Setting::firstOrCreate([]);
-        $existing = $setting->data ?? [];
+        if (isset($data['social_links']) && is_array($data['social_links'])) {
+            $data['social_links'] = json_encode(array_values($data['social_links']));
+        }
 
-        // Merge so that future unknown keys are preserved
-        $setting->update(['data' => array_merge($existing, $data)]);
+        Setting::setMany($data);
 
         Notification::make()
             ->title('Settings saved successfully')

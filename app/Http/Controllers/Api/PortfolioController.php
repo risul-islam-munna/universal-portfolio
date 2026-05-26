@@ -35,9 +35,18 @@ class PortfolioController extends Controller
 {
     public function settings(): JsonResponse
     {
-        $setting = Setting::first();
+        $s = Setting::forTheme('default');
 
-        return response()->json($setting?->data ?? []);
+        return response()->json([
+            'site_title' => $s['site_title'] ?? null,
+            'tagline' => $s['tagline'] ?? null,
+            'meta_description' => $s['meta_description'] ?? null,
+            'contact_email' => $s['contact_email'] ?? null,
+            'phone' => $s['phone'] ?? null,
+            'address' => $s['address'] ?? null,
+            'google_analytics_id' => $s['google_analytics_id'] ?? null,
+            'social_links' => json_decode($s['social_links'] ?? '[]', true) ?? [],
+        ]);
     }
 
     public function hero(): JsonResponse

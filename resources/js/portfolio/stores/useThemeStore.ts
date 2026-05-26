@@ -18,6 +18,8 @@ export interface Theme {
     id: number;
     name: string;
     slug: string;
+    /** Frontend registry key — matches a loader in resources/js/themes/registry.ts */
+    component: string;
     is_active: boolean;
     config: ThemeConfig;
 }
@@ -25,21 +27,26 @@ export interface Theme {
 export const useThemeStore = defineStore('theme', () => {
     const activeTheme = ref<Theme | null>(null);
     const allThemes = ref<Theme[]>([]);
-    const isDark = ref(true);
     const { get } = useApi();
 
     async function loadThemes() {
         try {
-            const [active, themes] = await Promise.all([get<Theme | null>('/active-theme'), get<{ data: Theme[] }>('/themes')]);
+            const [active, themes] = await Promise.all([
+                get<Theme | null>('/active-theme'),
+                get<{ data: Theme[] }>('/themes'),
+            ]);
             activeTheme.value = active;
             allThemes.value = themes.data ?? [];
-            if (active) applyTheme(active.config);
+            if (active) {
+                applyColorOverrides(active.config);
+            }
         } catch {
-            /* use defaults */
+            /* keep defaults */
         }
     }
 
-    function applyTheme(config: ThemeConfig) {
+    /** Apply only the colour CSS variables (overrides on top of the theme's own styles). */
+    function applyColorOverrides(config: ThemeConfig) {
         const root = document.documentElement;
         if (config.primary) root.style.setProperty('--p-primary', config.primary);
         if (config.secondary) root.style.setProperty('--p-secondary', config.secondary);
@@ -53,14 +60,9 @@ export const useThemeStore = defineStore('theme', () => {
 
     function switchTheme(theme: Theme) {
         activeTheme.value = theme;
-        applyTheme(theme.config);
+        applyColorOverrides(theme.config);
         localStorage.setItem('portfolio-theme', theme.slug);
     }
 
-    function toggleDark() {
-        isDark.value = !isDark.value;
-        document.documentElement.classList.toggle('dark', isDark.value);
-    }
-
-    return { activeTheme, allThemes, isDark, loadThemes, switchTheme, toggleDark };
+    return { activeTheme, allThemes, loadThemes, switchTheme, applyColorOverrides };
 });

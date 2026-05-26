@@ -13,6 +13,7 @@ class ThemeResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'component' => $this->component,
             'is_active' => $this->is_active,
             'config' => $this->config ?? [],
         ];

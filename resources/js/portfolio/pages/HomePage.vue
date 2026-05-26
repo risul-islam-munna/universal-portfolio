@@ -11,13 +11,13 @@
         <template v-else>
             <HeroSection />
             <AboutSection />
-            <SkillsSection />
-            <ServicesSection />
-            <PortfolioSection />
-            <ExperienceSection />
+            <SkillsSection v-if="skills.length > 0" />
+            <ServicesSection v-if="services.length > 0" />
+            <PortfolioSection v-if="projects.length > 0" />
+            <ExperienceSection v-if="experience.length > 0" />
             <BeeHookSection />
-            <TestimonialsSection />
-            <BlogSection />
+            <TestimonialsSection v-if="testimonials.length > 0" />
+            <BlogSection v-if="blog.length > 0" />
             <ContactSection />
         </template>
     </div>
@@ -37,5 +37,5 @@ import TestimonialsSection from '@/portfolio/components/sections/TestimonialsSec
 import BlogSection from '@/portfolio/components/sections/BlogSection.vue';
 import ContactSection from '@/portfolio/components/sections/ContactSection.vue';
 
-const { loading } = storeToRefs(useContentStore());
+const { loading, skills, services, projects, experience, testimonials, blog } = storeToRefs(useContentStore());
 </script>
