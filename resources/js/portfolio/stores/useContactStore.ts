@@ -14,6 +14,7 @@ export const useContactStore = defineStore('contact', () => {
         sending.value = true;
         success.value = false;
         error.value = null;
+
         try {
             await post('/contact', form.value);
             success.value = true;

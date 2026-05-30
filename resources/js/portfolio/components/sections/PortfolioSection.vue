@@ -61,16 +61,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useContentStore } from '@/portfolio/stores/useContentStore';
+import { ref, computed } from 'vue';
 import SectionTitle from '@/portfolio/components/ui/SectionTitle.vue';
+import { useContentStore } from '@/portfolio/stores/useContentStore';
 
 const { projects } = storeToRefs(useContentStore());
 const activeFilter = ref('All');
 
 const categories = computed(() => {
     const cats = new Set((projects.value ?? []).map((p: any) => p.category).filter(Boolean));
+
     return ['All', ...Array.from(cats)];
 });
 

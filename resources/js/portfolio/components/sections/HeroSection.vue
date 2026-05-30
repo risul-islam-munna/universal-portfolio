@@ -91,8 +91,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { storeToRefs } from 'pinia';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useContentStore } from '@/portfolio/stores/useContentStore';
 
 const { hero, settings } = storeToRefs(useContentStore());
@@ -107,31 +107,41 @@ const roles = computed(() => hero.value?.typing_roles?.length ? hero.value.typin
 
 function typeRole() {
     const role = roles.value[roleIndex.value % roles.value.length];
+
     if (!isDeleting.value) {
         currentRole.value = role.slice(0, charIndex.value + 1);
         charIndex.value++;
+
         if (charIndex.value === role.length) {
             isDeleting.value = true;
             timer = setTimeout(typeRole, 1800);
+
             return;
         }
     } else {
         currentRole.value = role.slice(0, charIndex.value - 1);
         charIndex.value--;
+
         if (charIndex.value === 0) {
             isDeleting.value = false;
             roleIndex.value++;
         }
     }
+
     timer = setTimeout(typeRole, isDeleting.value ? 60 : 100);
 }
 
 function scrollTo(hash: string) {
     const el = document.querySelector(hash);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+
+    if (el) {
+el.scrollIntoView({ behavior: 'smooth' });
+}
 }
 
-onMounted(() => { timer = setTimeout(typeRole, 500); });
+onMounted(() => {
+ timer = setTimeout(typeRole, 500); 
+});
 onUnmounted(() => clearTimeout(timer));
 </script>
 

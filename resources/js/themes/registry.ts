@@ -10,7 +10,7 @@
  *   3. Register the slug in ThemeForm::availableComponents()
  */
 
-import type { App, Component } from 'vue';
+import type { Component } from 'vue';
 import type { Router } from 'vue-router';
 
 export interface ThemePackage {
@@ -28,6 +28,7 @@ const registry: Record<string, ThemeLoader> = {
             import('@/portfolio/App.vue'),
             import('@/portfolio/router/index'),
         ]);
+
         return { App: appMod.default, router: routerMod.router };
     },
 
@@ -44,5 +45,6 @@ const registry: Record<string, ThemeLoader> = {
  */
 export async function loadThemePackage(component: string): Promise<ThemePackage> {
     const loader = registry[component] ?? registry.default;
+
     return loader();
 }

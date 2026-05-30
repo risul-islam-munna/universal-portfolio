@@ -53,10 +53,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useContentStore } from '@/portfolio/stores/useContentStore';
+import { computed } from 'vue';
 import SectionTitle from '@/portfolio/components/ui/SectionTitle.vue';
+import { useContentStore } from '@/portfolio/stores/useContentStore';
 
 const { about } = storeToRefs(useContentStore());
 
@@ -69,6 +69,9 @@ const stats = computed(() => [
 
 function scrollTo(hash: string) {
     const el = document.querySelector(hash);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+
+    if (el) {
+el.scrollIntoView({ behavior: 'smooth' });
+}
 }
 </script>

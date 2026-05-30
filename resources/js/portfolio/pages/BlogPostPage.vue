@@ -56,7 +56,10 @@ onMounted(async () => {
 const renderedContent = computed(() => post.value?.content?.replace(/\n/g, '<br>') ?? '');
 
 function formatDate(d: string) {
-    if (!d) return '';
+    if (!d) {
+return '';
+}
+
     return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 </script>

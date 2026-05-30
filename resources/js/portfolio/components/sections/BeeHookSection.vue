@@ -77,10 +77,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useContentStore } from '@/portfolio/stores/useContentStore';
+import { ref, onMounted, onUnmounted } from 'vue';
 import SectionTitle from '@/portfolio/components/ui/SectionTitle.vue';
+import { useContentStore } from '@/portfolio/stores/useContentStore';
 
 const { businessHighlight: biz } = storeToRefs(useContentStore());
 const current = ref(0);

@@ -37,16 +37,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useContentStore } from '@/portfolio/stores/useContentStore';
+import { computed } from 'vue';
 import SectionTitle from '@/portfolio/components/ui/SectionTitle.vue';
+import { useContentStore } from '@/portfolio/stores/useContentStore';
 
 const { blog } = storeToRefs(useContentStore());
 const latestPosts = computed(() => blog.value.slice(0, 3));
 
 function formatDate(d: string) {
-    if (!d) return '';
+    if (!d) {
+return '';
+}
+
     return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 </script>

@@ -98,9 +98,9 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useContentStore } from '@/portfolio/stores/useContentStore';
-import { useContactStore } from '@/portfolio/stores/useContactStore';
 import SectionTitle from '@/portfolio/components/ui/SectionTitle.vue';
+import { useContactStore } from '@/portfolio/stores/useContactStore';
+import { useContentStore } from '@/portfolio/stores/useContentStore';
 
 const { settings } = storeToRefs(useContentStore());
 const contactStore = useContactStore();

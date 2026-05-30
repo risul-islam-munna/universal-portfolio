@@ -49,8 +49,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 import { useContentStore } from '@/portfolio/stores/useContentStore';
 
 const { settings, skills, services, projects, experience, blog, businessHighlight } = storeToRefs(useContentStore());
@@ -66,12 +66,16 @@ const navLinks = computed(() => {
         { label: 'Blog', href: '#blog', show: blog.value.length > 0 },
         { label: 'Contact', href: '#contact', show: true },
     ];
+
     return all.filter((l) => l.show);
 });
 
 function scrollTo(hash: string) {
     const el = document.querySelector(hash);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+
+    if (el) {
+el.scrollIntoView({ behavior: 'smooth' });
+}
 }
 </script>
 

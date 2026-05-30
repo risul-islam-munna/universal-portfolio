@@ -24,8 +24,8 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useContentStore } from '@/portfolio/stores/useContentStore';
 import SectionTitle from '@/portfolio/components/ui/SectionTitle.vue';
+import { useContentStore } from '@/portfolio/stores/useContentStore';
 
 const { services } = storeToRefs(useContentStore());
 </script>

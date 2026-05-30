@@ -1,5 +1,5 @@
-import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import { createApp } from 'vue';
 import { loadThemePackage } from '@/themes/registry';
 
 /**
@@ -17,8 +17,10 @@ async function bootstrap() {
 
     try {
         const res = await fetch('/api/v1/active-theme');
+
         if (res.ok) {
             const theme = await res.json();
+
             if (theme?.component) {
                 component = theme.component;
             }

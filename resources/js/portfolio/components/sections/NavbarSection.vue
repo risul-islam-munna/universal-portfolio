@@ -79,11 +79,11 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useThemeStore } from '@/portfolio/stores/useThemeStore';
 import { useContentStore } from '@/portfolio/stores/useContentStore';
-import { storeToRefs } from 'pinia';
+import { useThemeStore } from '@/portfolio/stores/useThemeStore';
 
 const router = useRouter();
 const themeStore = useThemeStore();
@@ -105,11 +105,13 @@ const navLinks = computed(() => {
         { label: 'Blog', href: '#blog', show: blog.value.length > 0 },
         { label: 'Contact', href: '#contact', show: true },
     ];
+
     return all.filter((l) => l.show);
 });
 
 function scrollTo(hash: string) {
     const el = document.querySelector(hash);
+
     if (el) {
         el.scrollIntoView({ behavior: 'smooth' });
     } else {

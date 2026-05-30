@@ -20,6 +20,7 @@ export const useContentStore = defineStore('content', () => {
 
     async function loadAll() {
         loading.value = true;
+
         try {
             const [s, h, a, sk, sv, pr, ex, ed, te, bl, bh] = await Promise.all([
                 get('/settings'),

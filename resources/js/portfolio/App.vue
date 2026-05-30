@@ -9,13 +9,13 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { storeToRefs } from 'pinia';
+import FooterSection from '@/portfolio/components/sections/FooterSection.vue';
+import NavbarSection from '@/portfolio/components/sections/NavbarSection.vue';
 import { useContentStore } from '@/portfolio/stores/useContentStore';
 import { useThemeStore } from '@/portfolio/stores/useThemeStore';
-import NavbarSection from '@/portfolio/components/sections/NavbarSection.vue';
-import FooterSection from '@/portfolio/components/sections/FooterSection.vue';
 
 const route = useRoute();
 const contentStore = useContentStore();
@@ -25,15 +25,19 @@ const { settings } = storeToRefs(contentStore);
 watch(
     settings,
     (s) => {
-        if (!s) return;
+        if (!s) {
+return;
+}
 
         if (s.favicon) {
             let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+
             if (!link) {
                 link = document.createElement('link');
                 link.rel = 'icon';
                 document.head.appendChild(link);
             }
+
             link.href = s.favicon;
         }
 

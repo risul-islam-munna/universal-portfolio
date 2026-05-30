@@ -61,18 +61,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useContentStore } from '@/portfolio/stores/useContentStore';
+import { ref, onMounted, onUnmounted } from 'vue';
 import SectionTitle from '@/portfolio/components/ui/SectionTitle.vue';
+import { useContentStore } from '@/portfolio/stores/useContentStore';
 
 const { testimonials } = storeToRefs(useContentStore());
 const current = ref(0);
 let autoplay: ReturnType<typeof setInterval>;
 
-function prev() { current.value = current.value === 0 ? testimonials.value.length - 1 : current.value - 1; }
-function next() { current.value = (current.value + 1) % testimonials.value.length; }
+function prev() {
+ current.value = current.value === 0 ? testimonials.value.length - 1 : current.value - 1; 
+}
+function next() {
+ current.value = (current.value + 1) % testimonials.value.length; 
+}
 
-onMounted(() => { autoplay = setInterval(next, 5000); });
+onMounted(() => {
+ autoplay = setInterval(next, 5000); 
+});
 onUnmounted(() => clearInterval(autoplay));
 </script>

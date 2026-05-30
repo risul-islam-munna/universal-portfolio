@@ -52,10 +52,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useContentStore } from '@/portfolio/stores/useContentStore';
+import { ref, computed, onMounted } from 'vue';
 import SectionTitle from '@/portfolio/components/ui/SectionTitle.vue';
+import { useContentStore } from '@/portfolio/stores/useContentStore';
 
 const { skills, loading } = storeToRefs(useContentStore());
 const activeCategory = ref('All');
@@ -63,6 +63,7 @@ const animated = ref(false);
 
 const categories = computed(() => {
     const cats = new Set(skills.value.map((s: any) => s.category));
+
     return ['All', ...Array.from(cats)];
 });
 
@@ -70,5 +71,7 @@ const filteredSkills = computed(() =>
     activeCategory.value === 'All' ? skills.value : skills.value.filter((s: any) => s.category === activeCategory.value),
 );
 
-onMounted(() => setTimeout(() => { animated.value = true; }, 300));
+onMounted(() => setTimeout(() => {
+ animated.value = true; 
+}, 300));
 </script>

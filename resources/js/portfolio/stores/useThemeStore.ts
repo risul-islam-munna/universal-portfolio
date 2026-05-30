@@ -37,6 +37,7 @@ export const useThemeStore = defineStore('theme', () => {
             ]);
             activeTheme.value = active;
             allThemes.value = themes.data ?? [];
+
             if (active) {
                 applyColorOverrides(active.config);
             }
@@ -48,14 +49,38 @@ export const useThemeStore = defineStore('theme', () => {
     /** Apply only the colour CSS variables (overrides on top of the theme's own styles). */
     function applyColorOverrides(config: ThemeConfig) {
         const root = document.documentElement;
-        if (config.primary) root.style.setProperty('--p-primary', config.primary);
-        if (config.secondary) root.style.setProperty('--p-secondary', config.secondary);
-        if (config.accent) root.style.setProperty('--p-accent', config.accent);
-        if (config.bg) root.style.setProperty('--p-bg', config.bg);
-        if (config.surface) root.style.setProperty('--p-surface', config.surface);
-        if (config.text) root.style.setProperty('--p-text', config.text);
-        if (config.muted) root.style.setProperty('--p-muted', config.muted);
-        if (config.border) root.style.setProperty('--p-border', config.border);
+
+        if (config.primary) {
+root.style.setProperty('--p-primary', config.primary);
+}
+
+        if (config.secondary) {
+root.style.setProperty('--p-secondary', config.secondary);
+}
+
+        if (config.accent) {
+root.style.setProperty('--p-accent', config.accent);
+}
+
+        if (config.bg) {
+root.style.setProperty('--p-bg', config.bg);
+}
+
+        if (config.surface) {
+root.style.setProperty('--p-surface', config.surface);
+}
+
+        if (config.text) {
+root.style.setProperty('--p-text', config.text);
+}
+
+        if (config.muted) {
+root.style.setProperty('--p-muted', config.muted);
+}
+
+        if (config.border) {
+root.style.setProperty('--p-border', config.border);
+}
     }
 
     function switchTheme(theme: Theme) {
