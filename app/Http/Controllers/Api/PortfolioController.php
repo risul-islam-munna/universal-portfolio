@@ -41,6 +41,7 @@ class PortfolioController extends Controller
             'site_title' => $s['site_title'] ?? null,
             'tagline' => $s['tagline'] ?? null,
             'meta_description' => $s['meta_description'] ?? null,
+            'favicon' => ! empty($s['favicon']) ? \Storage::disk('portfolio')->url($s['favicon']) : null,
             'contact_email' => $s['contact_email'] ?? null,
             'phone' => $s['phone'] ?? null,
             'address' => $s['address'] ?? null,

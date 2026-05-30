@@ -48,7 +48,7 @@ class BlogPostForm
                 Section::make('Cover Image')->schema([
                     FileUpload::make('cover_image')
                         ->image()
-                        ->disk('public')
+                        ->disk('portfolio')
                         ->visibility('public')
                         ->directory('blog/covers'),
                 ]),

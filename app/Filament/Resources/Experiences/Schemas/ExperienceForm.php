@@ -42,7 +42,7 @@ class ExperienceForm
 
                     FileUpload::make('company_logo')
                         ->image()
-                        ->disk('public')
+                        ->disk('portfolio')
                         ->visibility('public')
                         ->directory('experience/logos'),
 

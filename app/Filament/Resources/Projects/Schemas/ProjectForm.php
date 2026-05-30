@@ -71,7 +71,7 @@ class ProjectForm
                 Section::make('Media')->schema([
                     FileUpload::make('thumbnail')
                         ->image()
-                        ->disk('public')
+                        ->disk('portfolio')
                         ->visibility('public')
                         ->directory('projects/thumbnails'),
 
@@ -80,7 +80,7 @@ class ProjectForm
                         ->image()
                         ->multiple()
                         ->reorderable()
-                        ->disk('public')
+                        ->disk('portfolio')
                         ->visibility('public')
                         ->directory('projects/gallery'),
                 ]),

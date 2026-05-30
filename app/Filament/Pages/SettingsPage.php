@@ -3,8 +3,10 @@
 namespace App\Filament\Pages;
 
 use App\Models\Setting;
+use App\Models\User;
 use App\Providers\StorageServiceProvider;
 use Filament\Actions\Action;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -20,6 +22,7 @@ use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Hash;
 
 class SettingsPage extends Page implements HasForms
 {
@@ -49,6 +52,7 @@ class SettingsPage extends Page implements HasForms
             'site_title' => $settings['site_title'] ?? null,
             'tagline' => $settings['tagline'] ?? null,
             'meta_description' => $settings['meta_description'] ?? null,
+            'favicon' => $settings['favicon'] ?? null,
             'contact_email' => $settings['contact_email'] ?? null,
             'phone' => $settings['phone'] ?? null,
             'address' => $settings['address'] ?? null,
@@ -64,6 +68,9 @@ class SettingsPage extends Page implements HasForms
             'r2_access_key' => $settings['r2_access_key'] ?? null,
             'r2_secret_key' => $settings['r2_secret_key'] ?? null,
             'r2_public_url' => $settings['r2_public_url'] ?? null,
+
+            // Account (prefixed to prevent collision with settings keys)
+            'account_email' => auth()->user()?->email,
         ]);
     }
 
@@ -88,7 +95,15 @@ class SettingsPage extends Page implements HasForms
 
                                 TextInput::make('meta_description')
                                     ->label('Meta Description')
-                                    ->maxLength(500)
+                                    ->maxLength(500),
+
+                                FileUpload::make('favicon')
+                                    ->label('Favicon')
+                                    ->helperText('Recommended: 32×32 PNG or ICO file.')
+                                    ->image()
+                                    ->disk('portfolio')
+                                    ->directory('favicons')
+                                    ->visibility('public')
                                     ->columnSpanFull(),
 
                                 TextInput::make('contact_email')
@@ -137,6 +152,46 @@ class SettingsPage extends Page implements HasForms
                                 ->collapsible()
                                 ->reorderable()
                                 ->columnSpanFull(),
+                        ]),
+
+                        Tab::make('Account')->schema([
+                            Section::make('Admin Credentials')->schema([
+                                Grid::make(2)->schema([
+                                    TextInput::make('account_email')
+                                        ->label('Email Address')
+                                        ->email()
+                                        ->required()
+                                        ->maxLength(255)
+                                        ->columnSpanFull(),
+
+                                    TextInput::make('account_current_password')
+                                        ->label('Current Password')
+                                        ->password()
+                                        ->revealable()
+                                        ->dehydrated(false),
+
+                                    TextInput::make('account_new_password')
+                                        ->label('New Password')
+                                        ->password()
+                                        ->revealable()
+                                        ->minLength(8)
+                                        ->dehydrated(false),
+
+                                    TextInput::make('account_new_password_confirmation')
+                                        ->label('Confirm New Password')
+                                        ->password()
+                                        ->revealable()
+                                        ->same('account_new_password')
+                                        ->dehydrated(false),
+                                ]),
+
+                                SchemaActions::make([
+                                    Action::make('updateAccount')
+                                        ->label('Update Account')
+                                        ->color('primary')
+                                        ->action(fn ($livewire) => $livewire->updateAccount()),
+                                ]),
+                            ]),
                         ]),
 
                         Tab::make('Storage')->schema([
@@ -199,6 +254,9 @@ class SettingsPage extends Page implements HasForms
     {
         $data = $this->form->getState();
 
+        // Strip account-tab fields — they are not settings keys
+        unset($data['account_email']);
+
         if (isset($data['social_links']) && is_array($data['social_links'])) {
             $data['social_links'] = json_encode(array_values($data['social_links']));
         }
@@ -207,6 +265,42 @@ class SettingsPage extends Page implements HasForms
 
         Notification::make()
             ->title('Settings saved successfully')
+            ->success()
+            ->send();
+    }
+
+    public function updateAccount(): void
+    {
+        // Password fields are dehydrated(false), so read directly from component state
+        $email = $this->data['account_email'] ?? null;
+        $currentPassword = $this->data['account_current_password'] ?? null;
+        $newPassword = $this->data['account_new_password'] ?? null;
+
+        /** @var User $admin */
+        $admin = auth()->user();
+
+        if (! empty($newPassword)) {
+            if (! Hash::check((string) $currentPassword, $admin->password)) {
+                Notification::make()
+                    ->title('Current password is incorrect')
+                    ->danger()
+                    ->send();
+
+                return;
+            }
+
+            $admin->password = Hash::make($newPassword);
+        }
+
+        $admin->email = $email;
+        $admin->save();
+
+        $this->data['account_current_password'] = null;
+        $this->data['account_new_password'] = null;
+        $this->data['account_new_password_confirmation'] = null;
+
+        Notification::make()
+            ->title('Account updated successfully')
             ->success()
             ->send();
     }

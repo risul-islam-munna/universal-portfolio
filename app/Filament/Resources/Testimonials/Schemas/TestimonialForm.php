@@ -40,7 +40,7 @@ class TestimonialForm
 
                     FileUpload::make('avatar')
                         ->image()
-                        ->disk('public')
+                        ->disk('portfolio')
                         ->visibility('public')
                         ->directory('testimonials/avatars'),
 

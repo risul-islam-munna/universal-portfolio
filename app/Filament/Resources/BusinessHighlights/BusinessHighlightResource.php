@@ -85,14 +85,14 @@ class BusinessHighlightResource extends Resource
                         ->image()
                         ->multiple()
                         ->reorderable()
-                        ->disk('public')
+                        ->disk('portfolio')
                         ->visibility('public')
                         ->directory('business/screenshots'),
 
                     FileUpload::make('logo')
                         ->label('Business Logo')
                         ->image()
-                        ->disk('public')
+                        ->disk('portfolio')
                         ->visibility('public')
                         ->directory('business'),
                 ]),

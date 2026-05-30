@@ -72,14 +72,14 @@ class HeroSectionResource extends Resource
                 Section::make('Media')->schema([
                     FileUpload::make('profile_photo')
                         ->image()
-                        ->disk('public')
+                        ->disk('portfolio')
                         ->visibility('public')
                         ->directory('hero'),
 
                     FileUpload::make('resume_file')
                         ->label('Resume / CV (PDF)')
                         ->acceptedFileTypes(['application/pdf'])
-                        ->disk('public')
+                        ->disk('portfolio')
                         ->visibility('public')
                         ->directory('hero'),
                 ]),

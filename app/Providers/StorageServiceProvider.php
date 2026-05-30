@@ -23,43 +23,48 @@ class StorageServiceProvider extends ServiceProvider
         try {
             $driver = Setting::getValue('storage_driver', 'local');
 
-            if ($driver !== 'r2') {
-                return;
+            if ($driver === 'r2') {
+                $accountId = Setting::getValue('r2_account_id');
+                $accessKey = Setting::getValue('r2_access_key');
+                $secretKey = Setting::getValue('r2_secret_key');
+                $bucket = Setting::getValue('r2_bucket');
+                $publicUrl = Setting::getValue('r2_public_url');
+
+                if (! $accountId || ! $accessKey || ! $secretKey || ! $bucket) {
+                    $this->configureLocalPortfolioDisk();
+
+                    return;
+                }
+
+                $r2Config = [
+                    'driver' => 's3',
+                    'key' => $accessKey,
+                    'secret' => $secretKey,
+                    'region' => 'auto',
+                    'bucket' => $bucket,
+                    'url' => $publicUrl,
+                    'endpoint' => "https://{$accountId}.r2.cloudflarestorage.com",
+                    'use_path_style_endpoint' => false,
+                    'visibility' => 'public',
+                ];
+
+                config([
+                    'filesystems.disks.portfolio' => $r2Config,
+                    'filesystems.disks.r2' => $r2Config,
+                    'filesystems.default' => 'r2',
+                ]);
+            } else {
+                $this->configureLocalPortfolioDisk();
             }
-
-            $accountId = Setting::getValue('r2_account_id');
-            $accessKey = Setting::getValue('r2_access_key');
-            $secretKey = Setting::getValue('r2_secret_key');
-            $bucket = Setting::getValue('r2_bucket');
-            $publicUrl = Setting::getValue('r2_public_url');
-
-            if (! $accountId || ! $accessKey || ! $secretKey || ! $bucket) {
-                return;
-            }
-
-            $r2Config = [
-                'driver' => 's3',
-                'key' => $accessKey,
-                'secret' => $secretKey,
-                'region' => 'auto',
-                'bucket' => $bucket,
-                'url' => $publicUrl,
-                'endpoint' => "https://{$accountId}.r2.cloudflarestorage.com",
-                'use_path_style_endpoint' => false,
-                'visibility' => 'public',
-            ];
-
-            // Override the 'public' disk to point to R2.
-            // All FileUpload components use ->disk('public'), so uploads go to R2.
-            // Storage::disk('public')->url() returns R2 CDN URLs automatically.
-            config([
-                'filesystems.disks.public' => $r2Config,
-                'filesystems.disks.r2' => $r2Config,
-                'filesystems.default' => 'r2',
-            ]);
         } catch (\Throwable) {
             // Silently fail when DB is unavailable (during migrations, early boot, etc.)
+            $this->configureLocalPortfolioDisk();
         }
+    }
+
+    protected function configureLocalPortfolioDisk(): void
+    {
+        config(['filesystems.disks.portfolio' => config('filesystems.disks.public')]);
     }
 
     /**

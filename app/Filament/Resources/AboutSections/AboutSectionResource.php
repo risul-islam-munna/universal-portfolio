@@ -65,14 +65,14 @@ class AboutSectionResource extends Resource
                 Section::make('Media')->schema([
                     FileUpload::make('profile_photo')
                         ->image()
-                        ->disk('public')
+                        ->disk('portfolio')
                         ->visibility('public')
                         ->directory('about'),
 
                     FileUpload::make('cv_file')
                         ->label('CV / Resume (PDF)')
                         ->acceptedFileTypes(['application/pdf'])
-                        ->disk('public')
+                        ->disk('portfolio')
                         ->visibility('public')
                         ->directory('about'),
                 ]),
